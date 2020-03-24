@@ -3,10 +3,11 @@ package com.softserve.paymentservice.service;
 import com.softserve.paymentservice.dto.PaymentInfoDto;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 @Service
 public class AmountCalculator {
-
-    private int amount;
 
     public enum Tariffs {
         BASIC(10), PREMIUM(1200);
@@ -17,17 +18,18 @@ public class AmountCalculator {
         }
     }
 
-    public int calculateAmount(PaymentInfoDto paymentInfoDto) {
-        if (paymentInfoDto.getTariff().equalsIgnoreCase(Tariffs.PREMIUM.toString())) {  //Tariffs.valueOf(tariff).toString().equals("PREMIUM")
-            amount = Tariffs.PREMIUM.coefficient;
+    public BigDecimal calculateAmount(PaymentInfoDto paymentInfoDto) {
+        BigDecimal amount;
+        if (paymentInfoDto.getTariff().equalsIgnoreCase(Tariffs.PREMIUM.toString())) {
+            amount = BigDecimal.valueOf(Tariffs.PREMIUM.coefficient);
         } else {
-            if (paymentInfoDto.getMinutes() > 0) {
-                amount =100+ Tariffs.valueOf(paymentInfoDto.getTariff()).coefficient * paymentInfoDto.getMinutes();
-            }
-            if (paymentInfoDto.getDiscount() > 0) {
-                amount = (amount * (100 - paymentInfoDto.getDiscount())) / 100;
-            }
+            amount = BigDecimal.valueOf(100).add(BigDecimal.valueOf(Tariffs.BASIC.coefficient).multiply(BigDecimal.valueOf(paymentInfoDto.getMinutes())));
         }
+
+        if (paymentInfoDto.getDiscount() > 0) {
+            amount = (amount.multiply(BigDecimal.valueOf(100).subtract(BigDecimal.valueOf(paymentInfoDto.getDiscount())))).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP);
+        }
+
         return amount;
     }
 }
