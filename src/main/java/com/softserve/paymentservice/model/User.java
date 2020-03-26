@@ -1,29 +1,22 @@
 package com.softserve.paymentservice.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.UUID;
 
-
 @Entity
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "cards")
-public class Card {
+@Table(name = "users")
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    private String cardNumber;
-    private String expMonth;
-    private String expYear;
-    private boolean working;
+    private long id;
     private UUID userId;
-
+    private String customerId;
 }
+

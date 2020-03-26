@@ -1,40 +1,66 @@
 package com.softserve.paymentservice.service;
 
-import com.softserve.paymentservice.exception.CardNotFoundException;
-import com.softserve.paymentservice.model.Card;
-import com.softserve.paymentservice.repository.CardRepository;
+import com.softserve.paymentservice.dto.CardDto;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
+import com.stripe.model.Token;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class CardService {
 
-    private final CardRepository cardRepository;
+    @Value("${stripe.key.secret}")
+    private String stripeSecretKey;
 
-    public List<Card> getCardsByUserId(UUID userId) {
-        return cardRepository.findByUserId(userId);
+
+    public String addCardToUser(CardDto cardDto, String customerId) throws StripeException {
+        Map<String, Object> cardParameters = new HashMap<>();
+        cardParameters.put("number", cardDto.getCardNumber());
+        cardParameters.put("exp_month", cardDto.getMonth());
+        cardParameters.put("exp_year", cardDto.getYear());
+        cardParameters.put("cvc", cardDto.getCvc());
+
+        Customer customer = Customer.retrieve(customerId);
+
+        Map<String, Object> tokenParameters = new HashMap<>();
+        tokenParameters.put("card", cardParameters);
+
+        Token token = Token.create(tokenParameters);
+        Map<String, Object> source = new HashMap<String, Object>();
+        source.put("source", token.getId());
+
+        customer.getSources().create(source).getId();
+        return customer.getSources().create(source).getId();
     }
 
-    public Card addCardToUser(Card card) {
-        cardRepository.save(card);
-        return card;
+
+    public String chaeckCard(CardDto cardDto, String customerId) throws StripeException {
+        Map<String, Object> cardParameters = new HashMap<>();
+        cardParameters.put("number", cardDto.getCardNumber());
+        cardParameters.put("exp_month", cardDto.getMonth());
+        cardParameters.put("exp_year", cardDto.getYear());
+        cardParameters.put("cvc", cardDto.getCvc());
+
+        Customer customer = Customer.retrieve(customerId);
+
+        Map<String, Object> tokenParameters = new HashMap<>();
+        tokenParameters.put("card", cardParameters);
+
+        Token token = Token.create(tokenParameters);
+        Map<String, Object> source = new HashMap<String, Object>();
+        source.put("source", token.getId());
+
+        customer.getSources().create(source).getId();
+        return customer.getSources().create(source).getId();
     }
 
-    public Card getUserCardByNumber(String cardNumber, UUID userId) {
-        Card card = cardRepository.findCardByCardNumberAndUserId(cardNumber,userId).get();
-        return card;
-    }
 
-    public Card setWorkingStatus(String cardNumber, UUID userId, Boolean workingStatus) throws CardNotFoundException {
-        Card card = cardRepository.findCardByCardNumberAndUserId(cardNumber,userId).orElseThrow(CardNotFoundException::new);
-        card.setWorking(workingStatus);
-        cardRepository.save(card);
-        return card;
-    }
 
 
 }

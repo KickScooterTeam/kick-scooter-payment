@@ -3,25 +3,18 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="create cards table" author="mary">
-
-        <createTable tableName="cards">
-            <column name="id" autoIncrement="true" type="int"/>
+    <changeSet id="create users table" author="mary">
+        <createTable tableName="users">
+            <column name="id" autoIncrement="true" type="long"/>
             <column name="user_id" type="uuid"/>
-            <column name="card_number" type="varchar(255)"/>
-            <column name="exp_month" type="varchar(255)"/>
-            <column name="exp_year" type="varchar(255)"/>
-            <column name="blocked" type="boolean"/>
+            <column name="stripe_id" type="varchar(32)"/>
         </createTable>
 
 
         <createTable tableName="invoices">
-            <column name="id" autoIncrement="true" type="int"/>
-            <column name="amount" type="int"/>
-            <column name="payed" type="boolean"/>
-            <column name="currency" type="varchar(255)"/>
+            <column name="id" autoIncrement="true" type="long"/>
             <column name="user_id" type="uuid"/>
-            <column name="date" type="timestamp"/>
+            <column name="invoice_id" type="varchar(32)"/>
         </createTable>
 
     </changeSet>

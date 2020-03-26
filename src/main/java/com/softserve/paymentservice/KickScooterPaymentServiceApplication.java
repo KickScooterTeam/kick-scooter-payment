@@ -8,5 +8,7 @@ public class KickScooterPaymentServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(KickScooterPaymentServiceApplication.class, args);
     }
-
 }
+
+
+

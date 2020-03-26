@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
@@ -17,11 +19,8 @@ public class Invoice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    private int amount;
-    private boolean payed;
-    private String currency;
-    private Date date;
+    private long id;
+    private String invoiceId;
+    private Instant dateCreated;
     private UUID userId;
 }
