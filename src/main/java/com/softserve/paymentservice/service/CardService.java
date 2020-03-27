@@ -20,8 +20,8 @@ public class CardService {
 
 
     public boolean addCardToUser(CardDto cardDto) {
-        AppUser appUser = userRepository.findAppUserByUserId(cardDto.getUserUUID())
-                .orElse(userRepository.saveAndFlush(new AppUser(cardDto.getUserUUID(), paymentServiceStripe.createCustomer(cardDto.getUserUUID()))));
+        AppUser appUser = userRepository.findById(cardDto.getUserUUID())
+                .orElse(userRepository.save(new AppUser(cardDto.getUserUUID(), paymentServiceStripe.createCustomer(cardDto.getUserUUID()))));
         System.out.println(appUser.getCustomerId() + "<------=========");
         return paymentServiceStripe.addCard(appUser.getCustomerId(), cardDto);
     }

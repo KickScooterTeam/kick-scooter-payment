@@ -19,7 +19,6 @@ public class PaymentController {
     private final CardService cardService;
     private final InvoiceService invoiceService;
 
-
     @PostMapping("/user-validation")
     public ResponseEntity<Boolean> checkUserBeforeTrip(@RequestParam(name = "userId") UUID userId) {
         if (!cardService.getAllCards(userId).isEmpty() && invoiceService.getUnpaidInvoices(userId).isEmpty()) {
