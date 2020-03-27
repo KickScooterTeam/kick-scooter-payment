@@ -5,9 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -25,4 +23,5 @@ public class Invoice {
     private int amount;
     private UUID userId;
     private boolean paid;
+    private String currency;
 }

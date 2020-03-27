@@ -9,21 +9,12 @@ import java.math.RoundingMode;
 @Service
 public class AmountCalculator {
 
-    public enum PricePlan {
-        BASIC(10), PREMIUM(1200);
-        private int coefficient;
-
-        PricePlan(int coefficient) {
-            this.coefficient = coefficient;
-        }
-    }
-
     public int calculateAmount(PaymentInfoDto paymentInfoDto) {
         BigDecimal amount;
         if (paymentInfoDto.getTariff().equalsIgnoreCase(PricePlan.PREMIUM.toString())) {
-            amount = BigDecimal.valueOf(PricePlan.PREMIUM.coefficient);
+            amount = BigDecimal.valueOf(PricePlan.PREMIUM.getCoefficient());
         } else {
-            amount = BigDecimal.valueOf(100).add(BigDecimal.valueOf(PricePlan.BASIC.coefficient).multiply(BigDecimal.valueOf(paymentInfoDto.getMinutes())));
+            amount = BigDecimal.valueOf(100).add(BigDecimal.valueOf(PricePlan.BASIC.getCoefficient()).multiply(BigDecimal.valueOf(paymentInfoDto.getMinutes())));
         }
 
         if (paymentInfoDto.getDiscount() > 0) {

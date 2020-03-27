@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    initialization-mode: always
+    password: ${DATABASE_PASSWORD}
+    platform: postgresql
+    url: jdbc:postgresql://localhost:5432/payment
+    username: ${DATABASE_USERNAME}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    change-log: classpath:/database/changelog-master.xml
+  kafka:
+    bootstrap-servers: ${BOOTSTRAP_SERVERS}
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: receipt:com.softserve.fakepaymentservice.dto.Receipt
+stripe:
+  key:
+    publishable: ${STRIPE_PUBLIC_KEY}
+    secret: ${STRIPE_SECRET_KEY}

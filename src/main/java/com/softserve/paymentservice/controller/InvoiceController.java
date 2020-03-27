@@ -20,13 +20,13 @@ public class InvoiceController {
     private final AmountCalculator amountCalculator;
     private final InvoiceService invoiceService;
 
-    @PostMapping("/new")
-    ResponseEntity<Invoice> payInvoice(@RequestBody PaymentInfoDto paymentInfoDto) throws InvoiceNotFoundException {
-        return ResponseEntity.ok(invoiceService.createInvoice(amountCalculator.calculateAmount(paymentInfoDto), paymentInfoDto.getUserid()));
+    @PostMapping
+    public ResponseEntity<Invoice> payInvoice(@RequestBody PaymentInfoDto paymentInfoDto) throws InvoiceNotFoundException {
+        return ResponseEntity.ok(invoiceService.createInvoice(amountCalculator.calculateAmount(paymentInfoDto), paymentInfoDto.getUserId()));
     }
 
     @GetMapping("/all")
-    ResponseEntity<List<Invoice>> getAllinvoices(@RequestParam(name = "userId") UUID userId) {
+    public ResponseEntity<List<Invoice>> getAlInvoices(@RequestParam(name = "userId") UUID userId) {
         return ResponseEntity.ok(invoiceService.getInvoices(userId));
     }
 }

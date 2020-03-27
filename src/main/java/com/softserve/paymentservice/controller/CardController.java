@@ -8,23 +8,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("card")
+@RequestMapping("/cards")
 public class CardController {
 
-    private final CardService cardService;
+     final CardService cardService;
 
     @PutMapping("/default")
-    ResponseEntity<String> setDefaultCard(@RequestBody CardDto cardDto) throws CardNotFoundException {
+    public ResponseEntity<CardDto> setDefaultCard(@RequestBody CardDto cardDto) throws CardNotFoundException {
         return ResponseEntity.ok(cardService.setDefaultCard(cardDto.getUserUUID(), cardDto.getLast4()));
     }
 
-    @PostMapping("/new")
-    ResponseEntity<String> addCard(@RequestBody CardDto cardDto) throws CardParametersException {
+    @PostMapping
+    public ResponseEntity<String> addCard(@RequestBody CardDto cardDto) throws CardParametersException {
         if (cardService.addCardToUser(cardDto, cardDto.getUserUUID())) {
             return ResponseEntity.ok("card was successful added");
         }
@@ -32,12 +32,12 @@ public class CardController {
     }
 
     @GetMapping("/all")
-    ResponseEntity<Map<String, String>> getAllCard(@RequestParam(name = "userId") UUID userId) throws CardNotFoundException {
+    public ResponseEntity<List<CardDto>> getAllCard(@RequestParam(name = "userId") UUID userId) throws CardNotFoundException {
         return ResponseEntity.ok(cardService.getAllCards(userId));
     }
 
-    @PostMapping("/delete")
-    ResponseEntity<String> removeCard(@RequestBody CardDto cardDto) throws CardNotFoundException {
+    @DeleteMapping
+    public  ResponseEntity<CardDto> removeCard(@RequestBody CardDto cardDto) throws CardNotFoundException {
         cardService.deleteCard(cardDto.getUserUUID(), cardDto.getLast4());
         return ResponseEntity.ok(cardService.deleteCard(cardDto.getUserUUID(), cardDto.getLast4()));
     }

@@ -14,15 +14,9 @@ import java.util.UUID;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
     private UUID userId;
     private String customerId;
 
 
-    public User(UUID userId, String customerId) {
-        this.userId = userId;
-        this.customerId = customerId;
-    }
 }
 
