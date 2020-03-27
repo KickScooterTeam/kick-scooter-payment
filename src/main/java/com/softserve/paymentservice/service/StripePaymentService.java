@@ -6,6 +6,7 @@ import com.softserve.paymentservice.exception.CardParametersException;
 import com.softserve.paymentservice.exception.InvoiceNotFoundException;
 import com.softserve.paymentservice.exception.UserCreationException;
 import com.softserve.paymentservice.model.Invoice;
+import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.*;
 import lombok.RequiredArgsConstructor;
@@ -20,25 +21,27 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class StripePaymentService implements PaymentService {
+    private final ConversionService conversionService;
 
-    final ConversionService conversionService;
-
-    @Value("${stripe.key.secret}")
-    private String stripeSecretKey;
+    @Value("${STRIPE_SECRET_KEY}")
+    private  String stripeSecretKey;
 
     @Override
-    public String createCustomer(UUID userId){
+    public String createCustomer(UUID userId) {
         try {
+            Stripe.apiKey = stripeSecretKey;
             Map<String, Object> customerParameter = new HashMap<>();
             customerParameter.put("name", userId);
-            return Customer.create(customerParameter).getId();
+            Customer customer = Customer.create(customerParameter);
+            return customer.getId();
         } catch (StripeException stripeException) {
+            System.out.println(stripeException.getMessage());
             throw new UserCreationException(stripeException.toString());
         }
     }
 
     @Override
-    public Invoice createInvoice(int amount, String customerId){
+    public Invoice createInvoice(int amount, String customerId) {
         try {
             Map<String, Object> invoiceItemParams = new HashMap<>();
             invoiceItemParams.put("customer", customerId);
@@ -61,7 +64,7 @@ public class StripePaymentService implements PaymentService {
     }
 
     @Override
-    public boolean addCard(String customerId, CardDto cardDto){
+    public boolean addCard(String customerId, CardDto cardDto) {
         try {
             Customer customer = Customer.retrieve(customerId);
             Map<String, Object> cardParameters = new HashMap<>();
@@ -99,7 +102,7 @@ public class StripePaymentService implements PaymentService {
     }
 
     @Override
-    public List<CardDto> getAllCards(String customerId){
+    public List<CardDto> getAllCards(String customerId) {
         try {
             Customer customer = Customer.retrieve(customerId);
             List<String> paymentSourceId = customer.getSources().getData().stream().map(PaymentSource::getId).collect(Collectors.toList());
@@ -115,7 +118,7 @@ public class StripePaymentService implements PaymentService {
     }
 
     @Override
-    public CardDto setDefaultCard(String customerId, String last4){
+    public CardDto setDefaultCard(String customerId, String last4) {
         try {
             Customer customer = Customer.retrieve(customerId);
             List<String> paymentSourceId = customer.getSources().getData().stream().map(PaymentSource::getId).collect(Collectors.toList());
@@ -133,7 +136,7 @@ public class StripePaymentService implements PaymentService {
     }
 
     @Override
-    public CardDto deleteCard(String customerId, String last4){
+    public CardDto deleteCard(String customerId, String last4) {
         try {
             Customer customer = Customer.retrieve(customerId);
             List<String> paymentSourceId = customer.getSources().getData().stream().map(PaymentSource::getId).collect(Collectors.toList());

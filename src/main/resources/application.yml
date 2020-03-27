@@ -8,9 +8,10 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
     hibernate:
-      ddl-auto: validate
-  liquibase:
-    change-log: classpath:/database/changelog-master.xml
+      ddl-auto: update
+    show-sql: true
+  #  liquibase:
+#    change-log: classpath:/database/changelog-master.xml
   kafka:
     bootstrap-servers: ${BOOTSTRAP_SERVERS}
     producer:
@@ -18,6 +19,6 @@ spring:
       properties:
         spring.json.type.mapping: receipt:com.softserve.fakepaymentservice.dto.Receipt
 stripe:
-  key:
+  keys:
     publishable: ${STRIPE_PUBLIC_KEY}
     secret: ${STRIPE_SECRET_KEY}

@@ -12,7 +12,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "invoices")
+//@Table(name = "invoices")
 public class Invoice {
 
     @Id
