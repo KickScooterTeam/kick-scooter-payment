@@ -13,6 +13,7 @@ public class PaymentInfoDto {
     private int minutes;
     private int discount;
     private String tariff;
-    private UUID userid;
+    private UUID userId;
     private String currency;
 }
+

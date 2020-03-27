@@ -1,12 +1,15 @@
 package com.softserve.paymentservice.controller;
 
 import com.softserve.paymentservice.dto.CardDto;
+import com.softserve.paymentservice.exception.CardNotFoundException;
+import com.softserve.paymentservice.exception.CardParametersException;
 import com.softserve.paymentservice.service.CardService;
-import com.softserve.paymentservice.service.InvoiceService;
-import com.softserve.paymentservice.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,29 +17,29 @@ import org.springframework.web.bind.annotation.*;
 public class CardController {
 
     private final CardService cardService;
-    private final InvoiceService invoiceService;
-    private final PaymentService paymentService;
 
     @PutMapping("/default")
-    ResponseEntity<String> setDefaultCard(@RequestBody CardDto cardDto) {
-
-
-        return ResponseEntity.ok("replace");
+    ResponseEntity<String> setDefaultCard(@RequestBody CardDto cardDto) throws CardNotFoundException {
+        return ResponseEntity.ok(cardService.setDefaultCard(cardDto.getUserUUID(), cardDto.getLast4()));
     }
 
     @PostMapping("/new")
-    ResponseEntity<String> addCard(@RequestBody CardDto cardDto) { //todo + check card
-        return ResponseEntity.ok("replace");
+    ResponseEntity<String> addCard(@RequestBody CardDto cardDto) throws CardParametersException {
+        if (cardService.addCardToUser(cardDto, cardDto.getUserUUID())) {
+            return ResponseEntity.ok("card was successful added");
+        }
+        return ResponseEntity.status(403).build();
     }
 
     @GetMapping("/all")
-    ResponseEntity<String> getAllCard(@RequestBody CardDto cardDto) {
-        return ResponseEntity.ok("replace");
+    ResponseEntity<Map<String, String>> getAllCard(@RequestParam(name = "userId") UUID userId) throws CardNotFoundException {
+        return ResponseEntity.ok(cardService.getAllCards(userId));
     }
 
-    @PostMapping("/remove")
-    ResponseEntity<String> removeCard(@RequestBody CardDto cardDto) { //todo + check card
-        return ResponseEntity.ok("replace");
+    @PostMapping("/delete")
+    ResponseEntity<String> removeCard(@RequestBody CardDto cardDto) throws CardNotFoundException {
+        cardService.deleteCard(cardDto.getUserUUID(), cardDto.getLast4());
+        return ResponseEntity.ok(cardService.deleteCard(cardDto.getUserUUID(), cardDto.getLast4()));
     }
 
 

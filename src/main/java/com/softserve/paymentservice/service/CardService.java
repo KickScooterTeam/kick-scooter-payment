@@ -1,66 +1,66 @@
 package com.softserve.paymentservice.service;
 
 import com.softserve.paymentservice.dto.CardDto;
+import com.softserve.paymentservice.exception.CardNotFoundException;
+import com.softserve.paymentservice.exception.CardParametersException;
+import com.softserve.paymentservice.model.User;
+import com.softserve.paymentservice.repository.UserRepository;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Customer;
-import com.stripe.model.Token;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class CardService {
+    PaymentService paymentServiceStripe;
+    private final UserRepository userRepository;
 
-    @Value("${stripe.key.secret}")
-    private String stripeSecretKey;
+    public boolean addCardToUser(CardDto cardDto, UUID userId) throws CardParametersException {
+        try {
+            User user = userRepository.findUserByUserId(userId)
+                    .orElse(userRepository.saveAndFlush(new User(userId, paymentServiceStripe.createCustomer(userId))));
+            return paymentServiceStripe.addCard(user.getCustomerId(), cardDto);
+        } catch (StripeException e) {
+            throw new CardParametersException();
+        }
+    }
 
+    public Map<String, String> getAllCards(UUID userId) throws CardNotFoundException { //todo is it okay to return map?
+        try {
+            User user = userRepository.findUserByUserId(userId).get(); //.orElseThrow(UserNotFoundException::new); //todo how?
+            return paymentServiceStripe.getAllCards(user.getCustomerId());
+        } catch (StripeException e) {
+            throw new CardNotFoundException();
+        }
+    }
 
-    public String addCardToUser(CardDto cardDto, String customerId) throws StripeException {
-        Map<String, Object> cardParameters = new HashMap<>();
-        cardParameters.put("number", cardDto.getCardNumber());
-        cardParameters.put("exp_month", cardDto.getMonth());
-        cardParameters.put("exp_year", cardDto.getYear());
-        cardParameters.put("cvc", cardDto.getCvc());
-
-        Customer customer = Customer.retrieve(customerId);
-
-        Map<String, Object> tokenParameters = new HashMap<>();
-        tokenParameters.put("card", cardParameters);
-
-        Token token = Token.create(tokenParameters);
-        Map<String, Object> source = new HashMap<String, Object>();
-        source.put("source", token.getId());
-
-        customer.getSources().create(source).getId();
-        return customer.getSources().create(source).getId();
+    public String setDefaultCard(UUID userId, int last4NumbersFromCard) throws CardNotFoundException {
+        try {
+            User user = userRepository.findUserByUserId(userId).get(); //.orElseThrow(UserNotFoundException::new); //todo how?
+            if (paymentServiceStripe.setDefaultCard(user.getCustomerId(), String.valueOf(last4NumbersFromCard)) != null) {
+                return paymentServiceStripe.setDefaultCard(user.getCustomerId(),  String.valueOf(last4NumbersFromCard));
+            } else {
+                throw new CardNotFoundException();
+            }
+        } catch (StripeException e) {
+            throw new CardNotFoundException();
+        }
     }
 
 
-    public String chaeckCard(CardDto cardDto, String customerId) throws StripeException {
-        Map<String, Object> cardParameters = new HashMap<>();
-        cardParameters.put("number", cardDto.getCardNumber());
-        cardParameters.put("exp_month", cardDto.getMonth());
-        cardParameters.put("exp_year", cardDto.getYear());
-        cardParameters.put("cvc", cardDto.getCvc());
-
-        Customer customer = Customer.retrieve(customerId);
-
-        Map<String, Object> tokenParameters = new HashMap<>();
-        tokenParameters.put("card", cardParameters);
-
-        Token token = Token.create(tokenParameters);
-        Map<String, Object> source = new HashMap<String, Object>();
-        source.put("source", token.getId());
-
-        customer.getSources().create(source).getId();
-        return customer.getSources().create(source).getId();
+    public String deleteCard(UUID userId, int last4NumbersFromCard) throws CardNotFoundException {
+        try {
+            User user = userRepository.findUserByUserId(userId).get(); //.orElseThrow(UserNotFoundException::new); //todo how?
+            if (paymentServiceStripe.deleteCard(user.getCustomerId(),  String.valueOf(last4NumbersFromCard)) != null) {
+                return paymentServiceStripe.setDefaultCard(user.getCustomerId(),  String.valueOf(last4NumbersFromCard));
+            } else {
+                throw new CardNotFoundException();
+            }
+        } catch (StripeException e) {
+            throw new CardNotFoundException();
+        }
     }
-
-
-
-
 }

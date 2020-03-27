@@ -3,6 +3,6 @@ package com.softserve.paymentservice.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "No such card")
-public class CardNotFoundException extends Exception {
+@ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE, reason = "Card parameters incorrect")
+public class CardParametersException extends Exception {
 }

@@ -22,5 +22,7 @@ public class Invoice {
     private long id;
     private String invoiceId;
     private Instant dateCreated;
+    private int amount;
     private UUID userId;
+    private boolean paid;
 }

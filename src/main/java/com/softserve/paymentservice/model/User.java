@@ -18,5 +18,11 @@ public class User {
     private long id;
     private UUID userId;
     private String customerId;
+
+
+    public User(UUID userId, String customerId) {
+        this.userId = userId;
+        this.customerId = customerId;
+    }
 }
 

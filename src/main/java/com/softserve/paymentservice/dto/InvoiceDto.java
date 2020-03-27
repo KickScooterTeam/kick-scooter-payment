@@ -13,7 +13,5 @@ import java.util.UUID;
 public class InvoiceDto {
     private UUID userUUID;
     private int amount;
-    private boolean payed;
     private String currency;
-    private Date date;
 }
