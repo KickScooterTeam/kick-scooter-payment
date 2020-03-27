@@ -14,14 +14,14 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("invoice")
+@RequestMapping("/invoices")
 public class InvoiceController {
 
     private final AmountCalculator amountCalculator;
     private final InvoiceService invoiceService;
 
     @PostMapping
-    public ResponseEntity<Invoice> payInvoice(@RequestBody PaymentInfoDto paymentInfoDto) throws InvoiceNotFoundException {
+    public ResponseEntity<Invoice> payInvoice(@RequestBody PaymentInfoDto paymentInfoDto){
         return ResponseEntity.ok(invoiceService.createInvoice(amountCalculator.calculateAmount(paymentInfoDto), paymentInfoDto.getUserId()));
     }
 

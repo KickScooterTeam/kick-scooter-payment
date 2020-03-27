@@ -1,6 +1,5 @@
 package com.softserve.paymentservice.controller;
 
-import com.softserve.paymentservice.exception.CardNotFoundException;
 import com.softserve.paymentservice.service.CardService;
 import com.softserve.paymentservice.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
@@ -14,15 +13,15 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("payment")
+@RequestMapping("/payment")
 public class PaymentController {
 
     private final CardService cardService;
     private final InvoiceService invoiceService;
 
 
-    @PostMapping("/validate-user")
-    ResponseEntity<Boolean> addCard(@RequestParam(name = "userId") UUID userId) throws CardNotFoundException {
+    @PostMapping("/user-validation")
+    public ResponseEntity<Boolean> checkUserBeforeTrip(@RequestParam(name = "userId") UUID userId) {
         if (!cardService.getAllCards(userId).isEmpty() && invoiceService.getUnpaidInvoices(userId).isEmpty()) {
             return ResponseEntity.ok(true);
         }

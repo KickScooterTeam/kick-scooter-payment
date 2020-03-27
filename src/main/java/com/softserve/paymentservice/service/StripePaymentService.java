@@ -27,7 +27,7 @@ public class StripePaymentService implements PaymentService {
     private String stripeSecretKey;
 
     @Override
-    public String createCustomer(UUID userId) throws UserCreationException {
+    public String createCustomer(UUID userId){
         try {
             Map<String, Object> customerParameter = new HashMap<>();
             customerParameter.put("name", userId);
@@ -38,7 +38,7 @@ public class StripePaymentService implements PaymentService {
     }
 
     @Override
-    public Invoice createInvoice(int amount, String customerId) throws InvoiceNotFoundException {
+    public Invoice createInvoice(int amount, String customerId){
         try {
             Map<String, Object> invoiceItemParams = new HashMap<>();
             invoiceItemParams.put("customer", customerId);
@@ -61,7 +61,7 @@ public class StripePaymentService implements PaymentService {
     }
 
     @Override
-    public boolean addCard(String customerId, CardDto cardDto) throws CardParametersException {
+    public boolean addCard(String customerId, CardDto cardDto){
         try {
             Customer customer = Customer.retrieve(customerId);
             Map<String, Object> cardParameters = new HashMap<>();
@@ -81,8 +81,6 @@ public class StripePaymentService implements PaymentService {
 
         } catch (StripeException stripeException) {
             throw new CardParametersException(stripeException.toString());
-        } catch (InvoiceNotFoundException invoiceNotFound) {
-            throw new CardParametersException(invoiceNotFound.getMessage());
         }
     }
 
@@ -101,7 +99,7 @@ public class StripePaymentService implements PaymentService {
     }
 
     @Override
-    public List<CardDto> getAllCards(String customerId) throws CardNotFoundException {
+    public List<CardDto> getAllCards(String customerId){
         try {
             Customer customer = Customer.retrieve(customerId);
             List<String> paymentSourceId = customer.getSources().getData().stream().map(PaymentSource::getId).collect(Collectors.toList());
@@ -112,12 +110,12 @@ public class StripePaymentService implements PaymentService {
             }
             return cardsInfo;
         } catch (StripeException stripeException) {
-            throw new CardNotFoundException(stripeException.getMessage());
+            throw new CardNotFoundException(stripeException.toString());
         }
     }
 
     @Override
-    public CardDto setDefaultCard(String customerId, String last4) throws CardNotFoundException {
+    public CardDto setDefaultCard(String customerId, String last4){
         try {
             Customer customer = Customer.retrieve(customerId);
             List<String> paymentSourceId = customer.getSources().getData().stream().map(PaymentSource::getId).collect(Collectors.toList());
@@ -135,7 +133,7 @@ public class StripePaymentService implements PaymentService {
     }
 
     @Override
-    public CardDto deleteCard(String customerId, String last4) throws CardNotFoundException {
+    public CardDto deleteCard(String customerId, String last4){
         try {
             Customer customer = Customer.retrieve(customerId);
             List<String> paymentSourceId = customer.getSources().getData().stream().map(PaymentSource::getId).collect(Collectors.toList());
