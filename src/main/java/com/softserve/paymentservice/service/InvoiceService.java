@@ -6,7 +6,6 @@ import com.softserve.paymentservice.exception.InvoiceNotFoundException;
 import com.softserve.paymentservice.exception.UserNotFoundException;
 import com.softserve.paymentservice.model.AppUser;
 import com.softserve.paymentservice.model.Invoice;
-import com.softserve.paymentservice.repository.InvoiceRepository;
 import com.softserve.paymentservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class InvoiceService {
-    private final InvoiceRepository invoiceRepository;
     private final UserRepository userRepository;
     private final StripePaymentService paymentServiceStripe;
 
