@@ -14,7 +14,7 @@ public class InvoiceToDto implements Converter<Invoice, InvoiceDto> {
     public InvoiceDto convert(Invoice invoice) {
         BigDecimal tripCost = BigDecimal.valueOf(invoice.getAmount()).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP); //todo test
         InvoiceDto invoiceDto = new InvoiceDto();
-        invoiceDto.setUserId(invoice.getUserId());
+        invoiceDto.setUserId(invoice.getAppUser().getUserId());
         invoiceDto.setPaymentDate(invoice.getDateCreated());
         invoiceDto.setCurrency(invoice.getCurrency());
         invoiceDto.setTripCost(tripCost);

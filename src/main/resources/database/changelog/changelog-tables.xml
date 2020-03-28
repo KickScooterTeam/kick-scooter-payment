@@ -4,18 +4,17 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <changeSet id="create users table" author="mary">
-        <createTable tableName="users">
-            <column name="id" autoIncrement="true" type="long"/>
-            <column name="user_id" type="uuid"/>
-            <column name="stripe_id" type="varchar(32)"/>
+        <createTable tableName="app_user">
+            <column name="user_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="customer_id" type="varchar(32)"/>
         </createTable>
-
-
-        <createTable tableName="invoices">
-            <column name="id" autoIncrement="true" type="long"/>
-            <column name="user_id" type="uuid"/>
-            <column name="invoice_id" type="varchar(32)"/>
+        <createTable tableName="invoice">
+            <column name="invoice_id" type="varchar(32)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="app_user" type="uuid"/>
         </createTable>
-
     </changeSet>
 </databaseChangeLog>
