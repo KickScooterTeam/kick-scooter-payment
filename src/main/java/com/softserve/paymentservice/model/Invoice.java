@@ -24,8 +24,8 @@ public class Invoice {
     private boolean paid;
     private String currency;
 
-    @ManyToOne
-    @JoinColumn(name = "app_user")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     AppUser appUser;
 
 }
