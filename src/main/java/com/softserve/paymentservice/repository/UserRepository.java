@@ -1,12 +1,12 @@
 package com.softserve.paymentservice.repository;
 
-import com.softserve.paymentservice.model.AppUser;
+import com.softserve.paymentservice.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public interface UserRepository extends JpaRepository<AppUser, UUID> {
+public interface UserRepository extends JpaRepository<User, UUID> {
 
-    Optional<AppUser> findAppUserByUserId(UUID userId);
+    Optional<User> findAppUserByUserId(UUID userId);
 }

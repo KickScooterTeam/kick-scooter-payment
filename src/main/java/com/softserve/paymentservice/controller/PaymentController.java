@@ -20,7 +20,7 @@ public class PaymentController {
     private final InvoiceService invoiceService;
 
     @PostMapping("/user-validation")
-    public ResponseEntity<Boolean> checkUserBeforeTrip(@RequestParam(name = "userId") UUID userId) {
+    public ResponseEntity<Boolean> checkUserBeforeTrip(@RequestParam(name = "userId") UUID userId) {//todo check if cust id created
         if (!cardService.getAllCards(userId).isEmpty() && invoiceService.getUnpaidInvoices(userId).isEmpty()) {
             return ResponseEntity.ok(true);
         }

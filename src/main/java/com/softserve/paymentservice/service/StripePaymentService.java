@@ -5,12 +5,11 @@ import com.softserve.paymentservice.exception.CardNotFoundException;
 import com.softserve.paymentservice.exception.CardParametersException;
 import com.softserve.paymentservice.exception.InvoiceNotFoundException;
 import com.softserve.paymentservice.exception.UserCreationException;
+import com.softserve.paymentservice.model.User;
 import com.softserve.paymentservice.model.Invoice;
-import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
@@ -21,15 +20,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class StripePaymentService implements PaymentService {
+
     private final ConversionService conversionService;
 
-    @Value("${STRIPE_SECRET_KEY}")
-    private  String stripeSecretKey;
 
     @Override
-    public String createCustomer(UUID userId) {
+    public User createUser(UUID userId) { // todo rework
         try {
-            Stripe.apiKey = stripeSecretKey;
             Map<String, Object> customerParameter = new HashMap<>();
             customerParameter.put("name", userId);
             Customer customer = Customer.create(customerParameter);
