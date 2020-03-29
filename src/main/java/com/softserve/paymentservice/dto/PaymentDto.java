@@ -1,0 +1,16 @@
+package com.softserve.paymentservice.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.UUID;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class PaymentDto {
+    private UUID userId;
+    private String cvc;
+    private String cardNumber;
+}
