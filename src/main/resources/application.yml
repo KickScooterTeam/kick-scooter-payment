@@ -10,8 +10,8 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-  #  liquibase:
-#    change-log: classpath:/database/changelog-master.xml
+  liquibase:
+    change-log: classpath:/database/changelog-master.xml
   kafka:
     bootstrap-servers: ${BOOTSTRAP_SERVERS}
     producer:
@@ -20,4 +20,4 @@ spring:
         spring.json.type.mapping: receipt:com.softserve.fakepaymentservice.dto.Receipt
 stripe:
   public-key: ${STRIPE_PUBLIC_KEY}
-  secret-key: ${STRIPE_SECRET_KEY}
+  private-key: ${STRIPE_SECRET_KEY}

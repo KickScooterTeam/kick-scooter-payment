@@ -12,7 +12,7 @@ public class StripeInvoiceToInvoice implements Converter<com.stripe.model.Invoic
         Invoice invoice = new Invoice();
         invoice.setInvoiceId(invoiceStripe.getId());
         invoice.setDateCreated(Instant.now());
-        invoice.setPaid(invoiceStripe.getPaid());
+        invoice.setPaid(invoiceStripe.getPaid()); //todo if invoiceStripe.getAmountPaid()==amount
         invoice.setCurrency(invoiceStripe.getCurrency());
         return invoice;
     }

@@ -11,9 +11,9 @@ import javax.annotation.PostConstruct;
 @Component
 @ConfigurationProperties("stripe")
 public class StripeProperties {
-
-    private String publicKey;
     private String privateKey;
+    private String publicKey;
+
 
     @PostConstruct
     void init() {
