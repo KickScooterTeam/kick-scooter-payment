@@ -2,50 +2,51 @@ package com.softserve.paymentservice.service;
 
 import com.softserve.paymentservice.converter.InvoiceToDto;
 import com.softserve.paymentservice.dto.InvoiceDto;
-import com.softserve.paymentservice.exception.InvoiceNotFoundException;
-import com.softserve.paymentservice.exception.UserNotFoundException;
-import com.softserve.paymentservice.model.AppUser;
 import com.softserve.paymentservice.model.Invoice;
-import com.softserve.paymentservice.repository.UserRepository;
+import com.softserve.paymentservice.model.User;
+import com.softserve.paymentservice.repository.InvoiceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class InvoiceService {
-    private final UserRepository userRepository;
-    private final StripePaymentService paymentServiceStripe;
-
+    private final PaymentService paymentService;
+    private final InvoiceRepository invoiceRepository;
     private final InvoiceToDto invoiceToDto;
     private final KafkaTemplate<String, InvoiceDto> kafkaTemplate;
 
-    public Invoice createInvoice(int amount, UUID userId) throws InvoiceNotFoundException {
-        AppUser appUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User was not found"));
-        Invoice invoice = paymentServiceStripe.createInvoice(amount, appUser.getCustomerId());
+    public InvoiceDto createInvoice(BigDecimal amount, User user) {
+        Invoice invoice = paymentService.createInvoice(amount.intValue(), user);
         invoice.setAmount(amount);
-        invoice.setAppUser(appUser);
-        userRepository.save(appUser);
+        invoice.setUser(user);
+        invoiceRepository.save(invoice);
         if (invoice.isPaid()) {
-            kafkaTemplate.send("email.receipt", invoiceToDto.convert(invoice));
+            kafkaTemplate.send("email-receipt", invoiceToDto.convert(invoice));
         }
-        return invoice;
+        return invoiceToDto.convert(invoice);
     }
 
 
-    public List<Invoice> getInvoices(UUID userId) {
-        AppUser user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
-        return user.getInvoiceList();
+    public List<InvoiceDto> getInvoices(User user) {
+        return invoiceRepository.findAllByUser(user).stream().map(invoiceToDto::convert)
+                .collect(Collectors.toList());
     }
 
 
-    public List<Invoice> getUnpaidInvoices(UUID userId) {
-        AppUser user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
-        return user.getInvoiceList().stream().filter(Invoice::isPaid).collect(Collectors.toList());
+    public List<InvoiceDto> getUnpaidInvoices(User user) {
+        return invoiceRepository.findAllByUserAndPaid(user, false).stream()
+                .map(invoiceToDto::convert)
+                .collect(Collectors.toList());
+    }
+
+    public InvoiceDto payUnpaidInvoice(String invoiceId) {
+        return invoiceToDto.convert(paymentService.payUnpaidInvoice(invoiceId));
     }
 }

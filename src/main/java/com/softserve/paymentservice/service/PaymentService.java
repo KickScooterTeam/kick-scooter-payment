@@ -2,23 +2,25 @@ package com.softserve.paymentservice.service;
 
 import com.softserve.paymentservice.dto.CardDto;
 import com.softserve.paymentservice.model.Invoice;
+import com.softserve.paymentservice.model.User;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface PaymentService {
 
-    String createCustomer(UUID userId);
+    User createUser(UUID appUserId);
 
-    Invoice createInvoice(int amount, String customerId);
+    Invoice createInvoice(int amount, User user);
 
-    boolean addCard(String customerId, CardDto cardDto);
+    Invoice payUnpaidInvoice(String invoiceId);
 
-    List<CardDto> getAllCards(String customerId);
+    boolean addCard(User user, CardDto cardDto);
 
-    CardDto setDefaultCard(String customerId, String last4);
+    List<CardDto> getAllCards(User user);
 
-    CardDto deleteCard(String customerId, String last4);
+    CardDto setDefaultCard(User user, String last4);
 
+    CardDto deleteCard(User user, String last4);
 
 }

@@ -2,6 +2,7 @@ package com.softserve.paymentservice.controller;
 
 import com.softserve.paymentservice.service.CardService;
 import com.softserve.paymentservice.service.InvoiceService;
+import com.softserve.paymentservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,12 +19,16 @@ public class PaymentController {
 
     private final CardService cardService;
     private final InvoiceService invoiceService;
+    private final UserService userService;
 
     @PostMapping("/user-validation")
     public ResponseEntity<Boolean> checkUserBeforeTrip(@RequestParam(name = "userId") UUID userId) {
-        if (!cardService.getAllCards(userId).isEmpty() && invoiceService.getUnpaidInvoices(userId).isEmpty()) {
-            return ResponseEntity.ok(true);
+        if (userService.isUserCreated(userId)) {
+            if (!cardService.getAllCards(userService.getUser(userId)).isEmpty()
+                    && invoiceService.getUnpaidInvoices(userService.getUser(userId)).isEmpty()) {
+                return ResponseEntity.ok(true);
+            }
         }
-        return ResponseEntity.status(403).build();
+        return ResponseEntity.ok(false);
     }
 }

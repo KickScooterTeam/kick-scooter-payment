@@ -19,6 +19,5 @@ spring:
       properties:
         spring.json.type.mapping: receipt:com.softserve.fakepaymentservice.dto.Receipt
 stripe:
-  keys:
-    publishable: ${STRIPE_PUBLIC_KEY}
-    secret: ${STRIPE_SECRET_KEY}
+  public-key: ${STRIPE_PUBLIC_KEY}
+  private-key: ${STRIPE_SECRET_KEY}

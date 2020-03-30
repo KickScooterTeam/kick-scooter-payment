@@ -16,4 +16,5 @@ public class InvoiceDto {
     private BigDecimal tripCost;
     private String currency;
     private Instant paymentDate;
+    private String invoiceId;
 }

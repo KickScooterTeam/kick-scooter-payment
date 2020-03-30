@@ -1,16 +1,20 @@
 package com.softserve.paymentservice.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
+@Table(name = "invoices")
 public class Invoice {
 
     @Id
@@ -20,12 +24,13 @@ public class Invoice {
 
     private Instant dateCreated;
 
-    private int amount;
+    private BigDecimal amount;
     private boolean paid;
     private String currency;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    AppUser appUser;
+    @JsonBackReference
+    User user;
 
 }

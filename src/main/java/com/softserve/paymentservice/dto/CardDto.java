@@ -13,9 +13,7 @@ import java.util.UUID;
 public class CardDto {
     private UUID userUUID;
     private String cardNumber;
-//    private YearMonth ym; //todo how to set it?.
-    private int year;
-    private int month;
+    private YearMonth yearMonth;
     private int cvc;
     private int last4;
     private String brand;

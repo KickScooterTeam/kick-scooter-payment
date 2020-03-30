@@ -1,61 +1,33 @@
 package com.softserve.paymentservice.service;
 
 import com.softserve.paymentservice.dto.CardDto;
-import com.softserve.paymentservice.exception.CardNotFoundException;
-import com.softserve.paymentservice.exception.UserNotFoundException;
-import com.softserve.paymentservice.model.AppUser;
-import com.softserve.paymentservice.repository.UserRepository;
+import com.softserve.paymentservice.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class CardService {
 
-    private final StripePaymentService paymentServiceStripe;
-    private final UserRepository userRepository;
+    private final PaymentService paymentService;
 
 
-    public boolean addCardToUser(CardDto cardDto) {
-        AppUser appUser = userRepository.findById(cardDto.getUserUUID())
-                .orElse(userRepository.save(new AppUser(cardDto.getUserUUID(), paymentServiceStripe.createCustomer(cardDto.getUserUUID()), new ArrayList<>())));
-        log.info(appUser.getCustomerId() + "<------=========");
-        return paymentServiceStripe.addCard(appUser.getCustomerId(), cardDto);
+    public boolean addCardToUser(CardDto cardDto, User user) {
+        return paymentService.addCard(user, cardDto);
     }
 
-    public List<CardDto> getAllCards(UUID userId) {
-        AppUser appUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User was not found"));
-        return paymentServiceStripe.getAllCards(appUser.getCustomerId());
-
+    public CardDto setDefaultCard( User user, int last4NumbersFromCard) {
+        return paymentService.setDefaultCard(user, String.valueOf(last4NumbersFromCard));
     }
 
-    public CardDto setDefaultCard(UUID userId, int last4NumbersFromCard) {
-        AppUser appUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User was not found"));
-        if (paymentServiceStripe.setDefaultCard(appUser.getCustomerId(), String.valueOf(last4NumbersFromCard)) != null) {
-            return paymentServiceStripe.setDefaultCard(appUser.getCustomerId(), String.valueOf(last4NumbersFromCard));
-        } else {
-            throw new CardNotFoundException("Card cannot be set as default because it was not found.");
-        }
-
+    public List<CardDto> getAllCards( User user) {
+        return paymentService.getAllCards(user);
     }
 
-
-    public CardDto deleteCard(UUID userId, int last4NumbersFromCard) throws CardNotFoundException {
-        AppUser appUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User was not found"));
-        if (paymentServiceStripe.deleteCard(appUser.getCustomerId(), String.valueOf(last4NumbersFromCard)) != null) {
-            return paymentServiceStripe.setDefaultCard(appUser.getCustomerId(), String.valueOf(last4NumbersFromCard));
-        } else {
-            throw new CardNotFoundException("Card cannot be deleted because it was not found.");
-        }
-
+    public CardDto deleteCard(User user, int last4NumbersFromCard) {
+        return paymentService.deleteCard(user, String.valueOf(last4NumbersFromCard));
     }
 }

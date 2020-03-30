@@ -1,13 +1,12 @@
 package com.softserve.paymentservice.model;
 
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,12 +14,15 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppUser {
+
+@Table(name = "users")
+public class User {
     @Id
     private UUID userId;
     private String customerId;
 
-    @OneToMany(mappedBy = "appUser", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonManagedReference
     List<Invoice> invoiceList;
 }
 
