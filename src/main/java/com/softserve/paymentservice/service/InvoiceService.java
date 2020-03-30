@@ -28,10 +28,10 @@ public class InvoiceService {
         invoice.setAmount(amount);
         invoice.setUser(user);
         invoiceRepository.save(invoice);
-        if (invoice.isPaid()) {
-            kafkaTemplate.send("email-receipt", invoiceToDto.convert(invoice));
-            log.info("receipt sent");
-        }
+//        if (invoice.isPaid()) {
+//            kafkaTemplate.send("email-receipt", invoiceToDto.convert(invoice));
+//            log.info("receipt sent");
+//        }
         return invoiceToDto.convert(invoice);
     }
 

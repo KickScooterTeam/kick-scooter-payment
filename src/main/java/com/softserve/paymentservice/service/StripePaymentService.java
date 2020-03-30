@@ -10,6 +10,7 @@ import com.softserve.paymentservice.model.User;
 import com.stripe.exception.StripeException;
 import com.stripe.model.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StripePaymentService implements PaymentService {
 
     private final ConversionService conversionService;
@@ -54,8 +56,10 @@ public class StripePaymentService implements PaymentService {
             invoiceParams.put("auto_advance", false);
             invoiceParams.put("collection_method", "charge_automatically");
             var invoiceStripe = com.stripe.model.Invoice.create(invoiceParams);
-            invoiceStripe.pay();
-            return conversionService.convert(invoiceStripe, Invoice.class);
+            var paidInvoiceStripe = invoiceStripe.pay();
+
+
+            return conversionService.convert(paidInvoiceStripe, Invoice.class);
         } catch (StripeException stripeException) {
             throw new InvoiceNotFoundException(stripeException.toString());
         }
@@ -91,6 +95,7 @@ public class StripePaymentService implements PaymentService {
             Map<String, Object> tokenParameters = new HashMap<>();
             tokenParameters.put("card", cardParameters);
             Token token = Token.create(tokenParameters);
+            log.info("token : {}", token);
 
             Map<String, Object> source = new HashMap<>();
             source.put("source", token.getId());
@@ -140,7 +145,9 @@ public class StripePaymentService implements PaymentService {
             for (String oneSource : paymentSourceId) {
                 Card card = (Card) customer.getSources().retrieve(oneSource);
                 if (card.getLast4().equals(last4)) {
-                    customer.setDefaultSource(oneSource); // fixme: set default card
+                    Map<String,Object> customerParams = new HashMap<>();
+                    customerParams.put("default_source", card.getId());
+                    customer.update(customerParams);
                     return new CardDto(Integer.parseInt(card.getLast4()), card.getBrand());
                 }
             }

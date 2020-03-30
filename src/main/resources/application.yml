@@ -12,7 +12,6 @@ spring:
     show-sql: true
   liquibase:
     change-log: classpath:/database/changelog-master.xml
-    drop-first: true
   kafka:
     bootstrap-servers: ${BOOTSTRAP_SERVERS}
     producer:
