@@ -140,7 +140,7 @@ public class StripePaymentService implements PaymentService {
             for (String oneSource : paymentSourceId) {
                 Card card = (Card) customer.getSources().retrieve(oneSource);
                 if (card.getLast4().equals(last4)) {
-                    customer.setDefaultSource(oneSource);
+                    customer.setDefaultSource(oneSource); // fixme: set default card
                     return new CardDto(Integer.parseInt(card.getLast4()), card.getBrand());
                 }
             }

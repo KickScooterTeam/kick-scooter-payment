@@ -3,7 +3,6 @@ package com.softserve.paymentservice.service;
 import com.softserve.paymentservice.dto.CardDto;
 import com.softserve.paymentservice.model.User;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +18,11 @@ public class CardService {
         return paymentService.addCard(user, cardDto);
     }
 
-    public CardDto setDefaultCard( User user, int last4NumbersFromCard) {
+    public CardDto setDefaultCard(User user, int last4NumbersFromCard) {
         return paymentService.setDefaultCard(user, String.valueOf(last4NumbersFromCard));
     }
 
-    public List<CardDto> getAllCards( User user) {
+    public List<CardDto> getAllCards(User user) {
         return paymentService.getAllCards(user);
     }
 
