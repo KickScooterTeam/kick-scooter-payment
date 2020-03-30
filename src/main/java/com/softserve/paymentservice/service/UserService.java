@@ -23,7 +23,7 @@ public class UserService {
         return userRepository.findById(userId)
                 .orElseGet(() -> createUser(userId));
     }
-    public boolean isUserCreated(UUID userId){ //todo check this
+    public boolean isUserCreated(UUID userId){
         return userRepository.existsById(userId);
     }
     public User getUser(UUID userId) {
