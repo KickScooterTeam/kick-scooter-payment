@@ -2,14 +2,10 @@ spring:
   datasource:
     initialization-mode: always
     password: ${DATABASE_PASSWORD}
-    platform: postgresql
-    url: jdbc:postgresql://localhost:5432/payment
+    url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
-    hibernate:
-      ddl-auto: update
-    show-sql: true
   liquibase:
     change-log: classpath:/database/changelog-master.xml
   kafka:
