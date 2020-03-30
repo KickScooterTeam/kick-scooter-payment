@@ -55,23 +55,19 @@ public class StripePaymentService implements PaymentService {
             invoiceParams.put("collection_method", "charge_automatically");
             var invoiceStripe = com.stripe.model.Invoice.create(invoiceParams);
             invoiceStripe.pay();
-            if (invoiceStripe.getPaid()) {
-                return conversionService.convert(invoiceStripe, Invoice.class);
-            } else {
-                throw new InvoiceNotFoundException("Stripe connection problem");
-            }
-
+            return conversionService.convert(invoiceStripe, Invoice.class);
         } catch (StripeException stripeException) {
             throw new InvoiceNotFoundException(stripeException.toString());
         }
     }
 
+
     @Override
     public Invoice payUnpaidInvoice(String invoiceId) {
         try {
-         var invoiceStripe =  com.stripe.model.Invoice.retrieve(invoiceId).pay();
+            var invoiceStripe = com.stripe.model.Invoice.retrieve(invoiceId).pay();
             if (invoiceStripe.getPaid()) {
-                return  conversionService.convert(invoiceStripe, Invoice.class);
+                return conversionService.convert(invoiceStripe, Invoice.class);
             } else {
                 throw new InvoiceNotFoundException("Stripe connection problem");
             }
