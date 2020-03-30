@@ -12,12 +12,13 @@ spring:
     show-sql: true
   liquibase:
     change-log: classpath:/database/changelog-master.xml
+    drop-first: true
   kafka:
     bootstrap-servers: ${BOOTSTRAP_SERVERS}
     producer:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
-        spring.json.type.mapping: receipt:com.softserve.fakepaymentservice.dto.Receipt
+        spring.json.type.mapping: receipt:com.softserve.paymentservice.dto.InvoiceDto
 stripe:
   public-key: ${STRIPE_PUBLIC_KEY}
   private-key: ${STRIPE_SECRET_KEY}
