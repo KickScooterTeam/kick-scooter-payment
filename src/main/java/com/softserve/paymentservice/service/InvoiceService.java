@@ -6,7 +6,7 @@ import com.softserve.paymentservice.model.Invoice;
 import com.softserve.paymentservice.model.User;
 import com.softserve.paymentservice.repository.InvoiceRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.convert.ConversionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class InvoiceService {
     private final PaymentService paymentService;
     private final InvoiceRepository invoiceRepository;
@@ -29,6 +30,7 @@ public class InvoiceService {
         invoiceRepository.save(invoice);
         if (invoice.isPaid()) {
             kafkaTemplate.send("email-receipt", invoiceToDto.convert(invoice));
+            log.info("receipt sent");
         }
         return invoiceToDto.convert(invoice);
     }
