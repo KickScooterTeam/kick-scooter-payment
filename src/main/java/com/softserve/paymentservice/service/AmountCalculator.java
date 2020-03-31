@@ -10,13 +10,9 @@ import java.math.RoundingMode;
 public class AmountCalculator {
 
     public BigDecimal calculateAmount(PaymentInfoDto paymentInfoDto) {
-        BigDecimal amount;
-        if (paymentInfoDto.getTariff().equalsIgnoreCase(PricePlan.PREMIUM.toString())) {
-            amount = BigDecimal.valueOf(PricePlan.PREMIUM.getCoefficient());
-        } else {
-            amount = BigDecimal.valueOf(100).add(BigDecimal.valueOf(PricePlan.BASIC.getCoefficient())
-                    .multiply(BigDecimal.valueOf(paymentInfoDto.getDuration().toMinutes())));
-        }
+
+        BigDecimal amount = BigDecimal.valueOf(100).add(BigDecimal.valueOf(PricePlan.BASIC.getCoefficient())
+                .multiply(BigDecimal.valueOf(paymentInfoDto.getDuration().toMinutes())));
 
         if (paymentInfoDto.getDiscount() > 0) {
             amount = (amount.multiply(BigDecimal.valueOf(100).subtract(BigDecimal.valueOf(paymentInfoDto.getDiscount()))))
