@@ -12,7 +12,7 @@ import java.math.RoundingMode;
 public class InvoiceToDto implements Converter<Invoice, InvoiceDto> {
     @Override
     public InvoiceDto convert(Invoice invoice) {
-        BigDecimal tripCost =invoice.getAmount().divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP);
+        BigDecimal tripCost =invoice.getAmount().divide(BigDecimal.valueOf(100), 2);
         InvoiceDto invoiceDto = new InvoiceDto();
         invoiceDto.setUserId(invoice.getUser().getUserId());
         invoiceDto.setPaymentDate(invoice.getDateCreated());
