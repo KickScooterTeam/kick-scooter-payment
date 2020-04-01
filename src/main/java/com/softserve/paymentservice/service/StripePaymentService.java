@@ -36,7 +36,6 @@ public class StripePaymentService implements PaymentService {
             user.setCustomerId(Customer.create(customerParameter).getId());
             return user;
         } catch (StripeException stripeException) {
-            System.out.println(stripeException.getMessage());
             throw new UserCreationException(stripeException.toString());
         }
     }
@@ -76,7 +75,6 @@ public class StripePaymentService implements PaymentService {
                 throw new InvoiceNotFoundException("Stripe connection problem");
             }
         } catch (StripeException stripeException) {
-            System.out.println(stripeException.toString());
             throw new InvoiceNotFoundException(stripeException.toString());
         }
     }
