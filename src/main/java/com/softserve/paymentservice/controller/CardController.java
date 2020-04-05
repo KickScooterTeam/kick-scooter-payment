@@ -34,8 +34,8 @@ public class CardController {
         return ResponseEntity.ok(cardService.setDefaultCard(userService.getUser(cardDto.getUserUUID()), cardDto.getLast4()));
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<CardDto>> getAllCard(@RequestParam(name = "userId") UUID userId) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<CardDto>> getAllCards(@PathVariable UUID userId) {
         return ResponseEntity.ok(cardService.getAllCards(userService.getUser(userId)));
     }
 
