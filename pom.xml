@@ -92,6 +92,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.softserve</groupId>
+            <artifactId>identity-starter</artifactId>
+            <version>0.0.1</version>
+        </dependency>
     </dependencies>
 
     <build>
