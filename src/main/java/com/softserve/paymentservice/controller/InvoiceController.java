@@ -1,8 +1,6 @@
 package com.softserve.paymentservice.controller;
 
 import com.softserve.paymentservice.dto.InvoiceDto;
-import com.softserve.paymentservice.dto.PaymentInfoDto;
-import com.softserve.paymentservice.service.AmountCalculator;
 import com.softserve.paymentservice.service.InvoiceService;
 import com.softserve.paymentservice.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,16 +17,9 @@ import java.util.UUID;
 @Slf4j
 public class InvoiceController {
 
-    private final AmountCalculator amountCalculator;
     private final InvoiceService invoiceService;
     private final UserService userService;
 
-    @PostMapping
-    public ResponseEntity<InvoiceDto> createInvoice(@RequestBody PaymentInfoDto paymentInfoDto) {
-        log.info(paymentInfoDto.toString());
-        return ResponseEntity.ok(invoiceService.createInvoice(amountCalculator.calculateAmount(paymentInfoDto),
-                userService.getUser(paymentInfoDto.getUserId())));
-    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<List<InvoiceDto>> getAlInvoices(@PathVariable UUID userId) {

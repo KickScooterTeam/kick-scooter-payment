@@ -16,6 +16,12 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
         spring.json.type.mapping: receipt:com.softserve.paymentservice.dto.InvoiceDto
+    consumer:
+      group-id: payment
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.mapping: >
+
 
 stripe:
   public-key: ${STRIPE_PUBLIC_KEY}
@@ -25,3 +31,14 @@ eureka:
   client:
     service-url:
       defaultZone: http://${EUREKA_SERVER}/eureka/
+
+kafka:
+  bootstrap-servers: ${BOOTSTRAP_SERVERS}
+  consumer:
+    group-id: payment
+    value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    properties:
+      spring.json.type.mapping: >
+        payment-info:com.softserve.paymentservice.dto.PaymentInfoDto
+
+
