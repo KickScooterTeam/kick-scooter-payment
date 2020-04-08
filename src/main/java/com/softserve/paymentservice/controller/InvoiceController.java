@@ -21,6 +21,8 @@ public class InvoiceController {
     private final UserService userService;
 
 
+
+    
     @GetMapping("/{userId}")
     public ResponseEntity<List<InvoiceDto>> getAlInvoices(@PathVariable UUID userId) {
         return ResponseEntity.ok(invoiceService.getInvoices(userService.getUser(userId)));
