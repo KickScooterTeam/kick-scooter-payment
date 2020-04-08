@@ -2,6 +2,7 @@ package com.softserve.paymentservice.service;
 
 import com.softserve.paymentservice.converter.InvoiceToDto;
 import com.softserve.paymentservice.dto.InvoiceDto;
+import com.softserve.paymentservice.exception.InvoiceNotFoundException;
 import com.softserve.paymentservice.model.Invoice;
 import com.softserve.paymentservice.model.User;
 import com.softserve.paymentservice.repository.InvoiceRepository;
@@ -28,10 +29,7 @@ public class InvoiceService {
         invoice.setAmount(amount);
         invoice.setUser(user);
         invoiceRepository.save(invoice);
-        if (invoice.isPaid()) {
-            kafkaTemplate.send("email-receipt", invoiceToDto.convert(invoice));
-            log.info("receipt sent");
-        }
+        sentToKafka(invoice);
         return invoiceToDto.convert(invoice);
     }
 
@@ -41,14 +39,25 @@ public class InvoiceService {
                 .collect(Collectors.toList());
     }
 
-
-    public List<InvoiceDto> getUnpaidInvoices(User user) {
-        return invoiceRepository.findAllByUserAndPaid(user, false).stream()
-                .map(invoiceToDto::convert)
-                .collect(Collectors.toList());
+    public Boolean hasUnpaidInvoice(User user) {
+        return invoiceRepository.findByUserAndPaid(user, false).isPresent();
     }
 
-    public InvoiceDto payUnpaidInvoice(String invoiceId) {
-        return invoiceToDto.convert(paymentService.payUnpaidInvoice(invoiceId));
+
+    public boolean payUnpaidInvoice(User user) {
+        Invoice invoice = paymentService.payUnpaidInvoice(
+                invoiceRepository.findByUserAndPaid(user, false)
+                        .orElseThrow(() -> new InvoiceNotFoundException("All invoices are paid")).getInvoiceId());
+        invoiceRepository.save(invoice);
+        sentToKafka(invoice);
+        return invoice.isPaid();
+    }
+
+
+    private void sentToKafka(Invoice invoice) {
+        if (invoice.isPaid()) {
+            kafkaTemplate.send("email-receipt", invoiceToDto.convert(invoice));
+            log.info("receipt sent");
+        }
     }
 }

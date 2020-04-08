@@ -14,29 +14,14 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/invoices")
-@Slf4j
 public class InvoiceController {
 
     private final InvoiceService invoiceService;
     private final UserService userService;
 
 
-
-    
     @GetMapping("/{userId}")
     public ResponseEntity<List<InvoiceDto>> getAlInvoices(@PathVariable UUID userId) {
         return ResponseEntity.ok(invoiceService.getInvoices(userService.getUser(userId)));
     }
-
-    @GetMapping("/{userId}/unpaid")
-    public ResponseEntity<List<InvoiceDto>> getUnpaidInvoices(@PathVariable UUID userId) {
-        return ResponseEntity.ok(invoiceService.getUnpaidInvoices(userService.getUser(userId)));
-    }
-
-    @PutMapping("/{invoiceId}")
-    public ResponseEntity<InvoiceDto> payUnpaidInvoice(@PathVariable String invoiceId) {
-        return ResponseEntity.ok(invoiceService.payUnpaidInvoice(invoiceId));
-    }
-
-
 }
