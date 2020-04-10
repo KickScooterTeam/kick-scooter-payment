@@ -11,9 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaymentInfoDto {
-    private Duration duration;
-    private int discount;
-    private String tariff;
     private UUID userId;
+    private Duration duration;
 }
 
