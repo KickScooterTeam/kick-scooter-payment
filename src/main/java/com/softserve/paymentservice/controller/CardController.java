@@ -42,7 +42,7 @@ public class CardController {
     @DeleteMapping
     public ResponseEntity<CardDto> deleteCard(@RequestBody CardDto cardDto) {
         User user = userService.getUser(cardDto.getUserUUID());
-        if (invoiceService.getUnpaidInvoices(user).isEmpty()) {
+        if (!invoiceService.hasUnpaidInvoice(user)) {
             return ResponseEntity.ok(cardService.deleteCard(user, cardDto.getLast4()));
         }
         return ResponseEntity.status(403).build();
