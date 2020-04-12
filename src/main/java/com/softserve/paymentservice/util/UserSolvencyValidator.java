@@ -16,7 +16,6 @@ public class UserSolvencyValidator implements ConstraintValidator<UserSolvencyVa
     private final InvoiceService invoiceService;
     private final UserService userService;
 
-
     @Override
     public boolean isValid(UUID userId, ConstraintValidatorContext constraintValidatorContext) {
         return userService.isUserCreated(userId) &&
