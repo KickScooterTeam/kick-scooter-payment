@@ -7,12 +7,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.METHOD})
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = UserSolvencyValidator.class)
 public @interface UserSolvencyValidation {
-    
-    String message() default "User has unpaid invoice.";
+
+    String message() default "The user has an unpaid invoice.";
 
     Class<?>[] groups() default {};
 

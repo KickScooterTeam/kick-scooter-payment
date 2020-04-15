@@ -24,7 +24,6 @@ public class InvoiceController {
 
 
     @GetMapping("/{userId}")
-    @UserSolvencyValidation
     public ResponseEntity<List<InvoiceDto>> getAlInvoices(@PathVariable UUID userId) {
         return ResponseEntity.ok(invoiceService.getInvoices(userService.getUser(userId)));
     }
