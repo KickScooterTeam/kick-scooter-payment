@@ -1,0 +1,15 @@
+---
+stages:
+    - build
+    
+#=======================================#
+# --------------- BUILD --------------- #
+#=======================================#
+
+build:
+  stage: build
+  script: 
+    - mvn clean package
+    - sudo docker build -t gitlab.sslsecure.website:5050/root/kick-scooter-trip:payment .
+    - sudo docker push gitlab.sslsecure.website:5050/root/kick-scooter-trip:payment
+  when: manual
