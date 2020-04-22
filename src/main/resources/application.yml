@@ -32,4 +32,4 @@ eureka:
       defaultZone: http://${EUREKA_SERVER}/eureka/
 logging:
   file:
-    path: /var/log/messages
+    path: /var/log/payment
