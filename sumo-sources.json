@@ -1,0 +1,9 @@
+{
+  "api.version":"v1",
+  "source":{
+     "sourceType":"LocalFile",
+     "name":"payment",
+     "pathExpression":"/var/log/payment/spring.log",
+     "blacklist":[]
+  }
+}
