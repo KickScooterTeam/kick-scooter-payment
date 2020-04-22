@@ -10,7 +10,6 @@ build:
     - mvn clean package
     - sudo docker build -t gitlab.sslsecure.website:5050/root/kick-scooter-trip:payment .
     - sudo docker push gitlab.sslsecure.website:5050/root/kick-scooter-trip:payment
-  when: manual
 
 deploy:
   stage: deploy
@@ -18,4 +17,3 @@ deploy:
     - ssh $USERNAME@$IP "cd /var/ && sudo bash /var/deploy.sh"
   after_script:
     - docker image prune -a -f &>/dev/null
-  when: manual
