@@ -15,6 +15,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/cards")
+@CrossOrigin(origins = "*")
 public class CardController {
 
     final CardService cardService;

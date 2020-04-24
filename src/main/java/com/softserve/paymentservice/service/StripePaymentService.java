@@ -122,7 +122,8 @@ public class StripePaymentService implements PaymentService {
     public List<CardDto> getAllCards(User user) {
         try {
             Customer customer = Customer.retrieve(user.getCustomerId());
-            List<String> paymentSourceId = customer.getSources().getData().stream().map(PaymentSource::getId).collect(Collectors.toList());
+            List<String> paymentSourceId = customer.getSources().getData().stream().map(PaymentSource::getId)
+                    .collect(Collectors.toList());
             List<CardDto> cardsInfo = new ArrayList<>();
             for (String oneSource : paymentSourceId) {
                 Card card = (Card) customer.getSources().retrieve(oneSource);

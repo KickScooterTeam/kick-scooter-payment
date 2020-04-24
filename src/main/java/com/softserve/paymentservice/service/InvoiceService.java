@@ -39,7 +39,7 @@ public class InvoiceService {
                 .collect(Collectors.toList());
     }
 
-    public Boolean hasUnpaidInvoice(User user) {
+    public boolean hasUnpaidInvoice(User user) {
         return invoiceRepository.findByUserAndPaid(user, false).isPresent();
     }
 
