@@ -125,9 +125,11 @@ public class StripePaymentService implements PaymentService {
             List<String> paymentSourceId = customer.getSources().getData().stream().map(PaymentSource::getId)
                     .collect(Collectors.toList());
             List<CardDto> cardsInfo = new ArrayList<>();
+            Card cardDefault = (Card) customer.getSources().retrieve(customer.getDefaultSource());
             for (String oneSource : paymentSourceId) {
                 Card card = (Card) customer.getSources().retrieve(oneSource);
-                cardsInfo.add(new CardDto(Integer.parseInt(card.getLast4()), card.getBrand()));
+                boolean isDefault = cardDefault.getLast4().equals(card.getLast4());
+                cardsInfo.add(new CardDto(Integer.parseInt(card.getLast4()), card.getBrand(), isDefault));
             }
             return cardsInfo;
         } catch (StripeException stripeException) {
@@ -144,10 +146,10 @@ public class StripePaymentService implements PaymentService {
             for (String oneSource : paymentSourceId) {
                 Card card = (Card) customer.getSources().retrieve(oneSource);
                 if (card.getLast4().equals(last4)) {
-                    Map<String,Object> customerParams = new HashMap<>();
+                    Map<String, Object> customerParams = new HashMap<>();
                     customerParams.put("default_source", card.getId());
                     customer.update(customerParams);
-                    return new CardDto(Integer.parseInt(card.getLast4()), card.getBrand());
+                    return new CardDto(Integer.parseInt(card.getLast4()), card.getBrand(),true);
                 }
             }
             return null;
@@ -166,7 +168,7 @@ public class StripePaymentService implements PaymentService {
                 Card card = (Card) customer.getSources().retrieve(oneSource);
                 if (card.getLast4().equals(last4)) {
                     card.delete();
-                    return new CardDto(Integer.parseInt(card.getLast4()), card.getBrand());
+                    return new CardDto(Integer.parseInt(card.getLast4()), card.getBrand(),false);
                 }
             }
             return null;

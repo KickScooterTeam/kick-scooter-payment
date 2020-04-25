@@ -25,9 +25,12 @@ public class PaymentController {
     @GetMapping("/{userId}/user-solvency")
     public ResponseEntity<Boolean> checkUserBeforeTrip(@PathVariable UUID userId) {
         if (userService.isUserCreated(userId)) {
-            if (!invoiceService.hasUnpaidInvoice(userService.getUser(userId)) &&
-                    !cardService.getAllCards(userService.getUser(userId)).isEmpty()) {
-                return ResponseEntity.ok(true);
+            if (!cardService.getAllCards(userService.getUser(userId)).isEmpty()) {
+                if (!invoiceService.hasUnpaidInvoice(userService.getUser(userId))) {
+                    return ResponseEntity.ok(true);
+                } else if (invoiceService.hasUnpaidInvoice(userService.getUser(userId))) {
+                    return ResponseEntity.ok(true);
+                }
             }
         }
         return ResponseEntity.ok(false);

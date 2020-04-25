@@ -10,7 +10,7 @@ public class AmountCalculator {
 
     public BigDecimal calculateAmount(PaymentInfoDto paymentInfoDto) {
         return BigDecimal.valueOf(100).add(BigDecimal.valueOf(PricePlan.BASIC.getCoefficient())
-                .multiply(BigDecimal.valueOf(paymentInfoDto.getDuration().toMinutes())));
+                .multiply(BigDecimal.valueOf(paymentInfoDto.getTripTime().toMinutes())));
     }
 
 
