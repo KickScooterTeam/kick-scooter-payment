@@ -17,9 +17,11 @@ public class CardDto {
     private int cvc;
     private int last4;
     private String brand;
+    private boolean isDefault;
 
-    public CardDto(int last4, String brand) {
+    public CardDto(int last4, String brand, boolean isDefault) {
         this.last4 = last4;
         this.brand = brand;
+        this.isDefault = isDefault;
     }
 }

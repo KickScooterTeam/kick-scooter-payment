@@ -12,6 +12,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class PaymentInfoDto {
     private UUID userId;
-    private Duration duration;
+    private Duration tripTime;
 }
 
